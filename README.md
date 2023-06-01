@@ -4,6 +4,13 @@ followed instructions in [fracpete/rpi-remote-access](https://github.com/fracpet
 ## Server
 AWS EC2 instance with Amazon Linux used as server
 
+**steps to configure EC2 instance**
+- configure security group with the following rules
+  - 22 for SSH (type)
+  - 6000 and 7000 for Custom TCP (Type)
+  - 6001, 6002... for more connected Raspberries. <br>
+    \* use the i.e. 6001 port instead of 6000 in the further configuration below if configuring another RPi
+
 access vit ssh:
 ```
 ssh -i "<certificate>.cer" <user>@<...>.eu-central-1.compute.amazonaws.com
@@ -49,7 +56,8 @@ ssh -i "<certificate>.cer" <user>@<...>.eu-central-1.compute.amazonaws.com
   ```
     sudo systemctl start frps.service
   ```
-  
+
+
 ## Raspberry Pi
 
 - port 22 needs to be open
