@@ -49,3 +49,57 @@ ssh -i "<certificate>.cer" <user>@<...>.eu-central-1.compute.amazonaws.com
   ```
     sudo systemctl start frps.service
   ```
+  
+## Raspberry Pi
+
+- port 22 needs to be open
+  - install frp
+    - download appropriate [release binary](https://github.com/fatedier/frp/releases)<br>
+      in our case [frp_0.49.0_linux_arm.tar.gz](https://github.com/fatedier/frp/releases/download/v0.49.0/frp_0.49.0_linux_arm.tar.gz)
+      ```
+        sudo bash
+        cd /opt
+        wget https://github.com/fatedier/frp/releases/download/v0.49.0/frp_0.49.0_linux_arm.tar.gz
+        tar -xzf frp_0.49.0_linux_arm.tar.gz
+        ln -s frp_0.49.0_linux_arm frp
+      ```
+      - Create `/etc/frpc.ini` with the following content:
+        ```
+          [common]
+          server_addr = <address_of_ec2_instance>
+          server_port = 7000
+      
+          [ssh]
+          type = tcp
+          local_ip = 127.0.0.1
+          local_port = 22
+          remote_port = 6000
+        ```
+        - Create systemd service `/etc/systemd/system/frpc.service` with the following content:
+          ```
+            Description=frp reverse proxy client
+            After=network.target
+        
+            [Service]
+            User=cpc
+            Group=cpc
+            Restart=on-failure
+            RestartSec=15s
+            WorkingDirectory=/opt/frp
+            ExecStart=/opt/frp/frpc -c /etc/frpc.ini
+        
+            [Install]
+            WantedBy=multi-user.target
+          ```
+          *User and Group are specific for each RPi (`whoami` and `groups` commands)*
+        - Install systemd service
+          ```
+            sudo systemctl enable /etc/systemd/system/frpc.service
+          ```
+        - Start service
+          ```
+            sudo systemctl start frpc.service
+          ```
+
+## Raspberry Pi access
+follow [fracpete/rpi-remote-access](https://github.com/fracpete/rpi-remote-access#raspberry-pi-access) repository instructions
