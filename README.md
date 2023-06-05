@@ -71,43 +71,45 @@ ssh -i "<certificate>.cer" <user>@<...>.eu-central-1.compute.amazonaws.com
         tar -xzf frp_0.49.0_linux_arm.tar.gz
         ln -s frp_0.49.0_linux_arm frp
       ```
-      - Create `/etc/frpc.ini` with the following content:
-        ```
-          [common]
-          server_addr = <address_of_ec2_instance>
-          server_port = 7000
+    - Create `/etc/frpc.ini` with the following content:
+      ```
+        [common]
+        server_addr = <address_of_ec2_instance>
+        server_port = 7000
       
-          [ssh]
-          type = tcp
-          local_ip = 127.0.0.1
-          local_port = 22
-          remote_port = 6000
-        ```
-        - Create systemd service `/etc/systemd/system/frpc.service` with the following content:
-          ```
-            Description=frp reverse proxy client
-            After=network.target
+        [ssh_<device_name>]
+        type = tcp
+        local_ip = 127.0.0.1
+        local_port = 22
+        remote_port = 6000
+      ```
+      **Warning:** if multiple devices are connected to frp, [ssh] needs to be unique per device. Name it i.e. [ssh_cpc1] 
+    - Create systemd service `/etc/systemd/system/frpc.service` with the following content:
+      ```
+        [Unit]
+        Description=frp reverse proxy client
+        After=network.target
         
-            [Service]
-            User=cpc
-            Group=cpc
-            Restart=on-failure
-            RestartSec=15s
-            WorkingDirectory=/opt/frp
-            ExecStart=/opt/frp/frpc -c /etc/frpc.ini
+        [Service]
+        User=cpc
+        Group=cpc
+        Restart=on-failure
+        RestartSec=15s
+        WorkingDirectory=/opt/frp
+        ExecStart=/opt/frp/frpc -c /etc/frpc.ini
         
-            [Install]
-            WantedBy=multi-user.target
-          ```
-          *User and Group are specific for each RPi (`whoami` and `groups` commands)*
-        - Install systemd service
-          ```
-            sudo systemctl enable /etc/systemd/system/frpc.service
-          ```
-        - Start service
-          ```
-            sudo systemctl start frpc.service
-          ```
+        [Install]
+        WantedBy=multi-user.target
+      ```
+      *User and Group are specific for each RPi (`whoami` and `groups` commands)*
+    - Install systemd service
+      ```
+        sudo systemctl enable /etc/systemd/system/frpc.service
+      ```
+    - Start service
+      ```
+        sudo systemctl start frpc.service
+      ```
 
 ## Raspberry Pi access
 follow [fracpete/rpi-remote-access](https://github.com/fracpete/rpi-remote-access#raspberry-pi-access) repository instructions
