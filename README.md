@@ -83,7 +83,7 @@ ssh -i "<certificate>.cer" <user>@<...>.eu-central-1.compute.amazonaws.com
         local_port = 22
         remote_port = 6000
       ```
-      **Warning:** if multiple devices are connected to frp, [ssh] needs to be unique per device. Name it i.e. [ssh_cpc1] 
+      **Warning:** if multiple devices are connected to frp, [ssh] needs to be unique per device. Name it i.e. [ssh_cpc1] and different devices need to connect to different ports (i.e. 6001,6002,6101,..). Ports need to be opened in FRP server
     - Create systemd service `/etc/systemd/system/frpc.service` with the following content:
       ```
         [Unit]
