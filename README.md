@@ -59,6 +59,7 @@ ssh -i "<certificate>.cer" <user>@<...>.eu-central-1.compute.amazonaws.com
 
 
 ## Raspberry Pi
+- SSH needs to be enabled in RPi configuration
 
 - port 22 needs to be open
   - install frp
