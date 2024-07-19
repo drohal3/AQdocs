@@ -1,0 +1,14 @@
+[Unit]
+Description=frp reverse proxy client
+After=network.target
+
+[Service]
+User=cpc
+Group=cpc
+Restart=on-failure
+RestartSec=15s
+WorkingDirectory=/opt/frp
+ExecStart=/opt/frp/frpc -c /etc/frpc.ini
+
+[Install]
+WantedBy=multi-user.target
